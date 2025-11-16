@@ -20,8 +20,8 @@ import java.util.UUID;
 public class Patient {
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Pattern(regexp = "^[A-Za-zÀ-ž\\ \\s'-]{2,50}$")
     @Column(nullable = false, length = 100)
     private String name;
