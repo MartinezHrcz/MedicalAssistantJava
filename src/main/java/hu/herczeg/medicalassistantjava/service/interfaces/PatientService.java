@@ -14,7 +14,7 @@ public interface PatientService {
     PatientDto CreatePatient(RegisterPatientDto dto);
     PatientDto UpdatePatient(Long id, UpdatePatientDto dto);
     boolean UpdatePatientPassword(Long id, PasswordUpdateDto dto);
-    void DeletePatient(int id);
+    void DeletePatient(Long id);
     PatientAuthResponseDto LoginPatientAsync(PatientLoginDto dto);
     PatientMedicationDto GetPatientMedication(String taj);
 
