@@ -3,14 +3,19 @@ package hu.herczeg.medicalassistantjava.service.impl;
 import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
 import hu.herczeg.medicalassistantjava.dto.doctordtos.*;
 import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientDto;
+import hu.herczeg.medicalassistantjava.mappers.DoctorMapper;
+import hu.herczeg.medicalassistantjava.mappers.PatientMapper;
+import hu.herczeg.medicalassistantjava.model.Doctor;
+import hu.herczeg.medicalassistantjava.model.Medication;
+import hu.herczeg.medicalassistantjava.model.Patient;
 import hu.herczeg.medicalassistantjava.repository.DoctorRepository;
 import hu.herczeg.medicalassistantjava.repository.PatientRepository;
 import hu.herczeg.medicalassistantjava.service.interfaces.DoctorService;
-import org.hibernate.annotations.SecondaryRow;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -19,75 +24,152 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DoctorMapper doctorMapper;
+    private final PatientMapper patientMapper;
 
-    public DoctorServiceImpl(DoctorRepository doctorRepository, PatientRepository patientRepository, PasswordEncoder passwordEncoder) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, PatientRepository patientRepository, PasswordEncoder passwordEncoder, DoctorMapper doctorMapper, PatientMapper patientMapper) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
         this.passwordEncoder = passwordEncoder;
+        this.doctorMapper = doctorMapper;
+        this.patientMapper = patientMapper;
     }
 
     @Override
     public List<DoctorDto> GetAllDoctors() {
-        return List.of();
+        return doctorMapper.toDtos(doctorRepository.findAll());
     }
 
     @Override
     public DoctorDto GetDoctorById(Long id) {
-        return null;
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(
+                NoSuchElementException::new
+        );
+        return doctorMapper.toDto(doctor);
     }
 
     @Override
     public List<DoctorDto> GetDoctorByName(String name) {
-        return List.of();
+        return doctorMapper.toDtos(doctorRepository.findAllByNameContainingIgnoreCase(name));
     }
 
     @Override
     public DoctorDto CreateDoctor(RegisterDoctorDto dto) {
-        return null;
+        if (doctorRepository.findByEmailEquals(dto.Email))
+        {
+            throw new IllegalArgumentException("Doctor already exists");
+        }
+        Doctor doctor = doctorMapper.toEntity(dto);
+        doctor.setPasswordHash(passwordEncoder.encode(dto.Password));
+        doctorRepository.save(doctor);
+        return doctorMapper.toDto(doctor);
     }
 
     @Override
     public DoctorDto UpdateDoctor(Long id, UpdateDoctorDto dto) {
-        return null;
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(
+                NoSuchElementException::new
+        );
+        doctor.setName(dto.Name);
+        doctor.setEmail(dto.Email);
+        doctor.setAddress(dto.Address);
+        doctor.setPhoneNumber(dto.Phone);
+        doctorRepository.save(doctor);
+        return doctorMapper.toDto(doctor);
     }
 
     @Override
     public boolean UpdateDoctorPassword(Long id, PasswordUpdateDto dto) {
-        return false;
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(
+                NoSuchElementException::new
+        );
+        if (!passwordEncoder.matches(doctor.getPasswordHash(), dto.oldPassword))
+        {
+            throw new IllegalArgumentException("Old Password does not match");
+        }
+        doctor.setPasswordHash(passwordEncoder.encode(dto.newPassword));
+        doctorRepository.save(doctor);
+        return true;
     }
 
     @Override
     public boolean DeleteDoctor(Long id) {
-        return false;
+        if (!doctorRepository.findById(id).isPresent()){
+            throw new IllegalArgumentException("Doctor does not exist");
+        }
+        doctorRepository.deleteById(id);
+        return true;
     }
 
     @Override
     public List<PatientDto> GetPatientsOfDoctor(Long id) {
-        return List.of();
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(
+                NoSuchElementException::new
+        );
+        List<Patient> patients = patientRepository.findAllByDoctor(doctor);
+        return patientMapper.toDtos(patients);
     }
 
     @Override
     public void AddPatient(Long doctorId, Long patientId) {
-
+        Patient patient = patientRepository.findById(patientId).orElseThrow(
+                NoSuchElementException::new
+        );
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(
+                NoSuchElementException::new
+        );
+        patient.setDoctor(doctor);
+        patientRepository.save(patient);
     }
 
     @Override
     public void RemovePatient(Long doctorId, Long patientId) {
-
+        Patient patient = patientRepository.findById(patientId).orElseThrow(
+                NoSuchElementException::new
+        );
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(
+                NoSuchElementException::new
+        );
+        patient.setDoctor(null);
+        patientRepository.save(patient);
     }
 
     @Override
     public DoctorAuthResponseDto LoginDoctor(LoginDoctorDto loginDoctorDto) {
-        return null;
+        Doctor doctor;
+        try {
+            doctor = doctorRepository.findByEmailEqualsIgnoreCase(loginDoctorDto.Email);
+        }catch (Exception e){
+            throw new IllegalArgumentException("Doctor already exists");
+        }
+
+        if (!passwordEncoder.matches(loginDoctorDto.Password, doctor.getPasswordHash())) {
+            throw new IllegalArgumentException("Wrong Password");
+        }
+
+        return new DoctorAuthResponseDto(doctorMapper.toDto(doctor), "");
     }
 
     @Override
     public void AddPatientMedication(String taj, String title, String medication) {
-
+        Patient patient = patientRepository.findByTaj(taj);
+        if (patient==null){
+            throw new IllegalArgumentException("Patient does not exist");
+        }
+        patient.medications.add(new Medication(UUID.randomUUID(),title, medication, patient));
+        patientRepository.save(patient);
     }
 
     @Override
     public void RemovePatientMedication(String taj, UUID medication) {
-
+        Patient patient = patientRepository.findByTaj(taj);
+        if (patient==null){
+            throw new IllegalArgumentException("Patient does not exist");
+        }
+        if (patient.getMedications().stream().noneMatch(m->m.getId().equals(medication))){
+            throw new  IllegalArgumentException("Medication does not exist");
+        }
+        patient.getMedications().removeIf(m->m.getId().equals(medication));
+        patientRepository.save(patient);
     }
 }
