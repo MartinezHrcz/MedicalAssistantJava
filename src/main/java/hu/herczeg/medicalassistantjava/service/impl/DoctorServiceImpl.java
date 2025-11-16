@@ -3,12 +3,29 @@ package hu.herczeg.medicalassistantjava.service.impl;
 import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
 import hu.herczeg.medicalassistantjava.dto.doctordtos.*;
 import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientDto;
+import hu.herczeg.medicalassistantjava.repository.DoctorRepository;
+import hu.herczeg.medicalassistantjava.repository.PatientRepository;
 import hu.herczeg.medicalassistantjava.service.interfaces.DoctorService;
+import org.hibernate.annotations.SecondaryRow;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class DoctorServiceImpl implements DoctorService {
+
+    private final DoctorRepository doctorRepository;
+    private final PatientRepository patientRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public DoctorServiceImpl(DoctorRepository doctorRepository, PatientRepository patientRepository, PasswordEncoder passwordEncoder) {
+        this.doctorRepository = doctorRepository;
+        this.patientRepository = patientRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     public List<DoctorDto> GetAllDoctors() {
         return List.of();
