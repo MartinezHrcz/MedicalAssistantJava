@@ -65,12 +65,7 @@ public class DoctorServiceImpl implements DoctorService {
         {
             throw new IllegalArgumentException("Doctor already exists");
         }
-        Doctor doctor = doctorMapper.toEntity(dto);
-        doctor= new Doctor();
-        doctor.setName(dto.getName());
-        doctor.setAddress(dto.getAddress());
-        doctor.setPhoneNumber(dto.getPhoneNumber());
-        doctor.setEmail(dto.getEmail());
+        Doctor doctor =  doctorMapper.toEntity(dto);
         doctor.setPasswordHash(passwordEncoder.encode(dto.passwordHash));
         doctorRepository.save(doctor);
         return doctorMapper.toDto(doctor);
