@@ -12,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 
 public class PatientMedicationDto{
-    public Long Id;
-    public String Taj;
-    private List<Medication> Medications;
+    public Long id;
+    public String taj;
+    private List<Medication> medications;
 }
 

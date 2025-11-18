@@ -39,7 +39,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<DoctorDto> GetAllDoctors() {
-        log.info("GetAllDoctors");
         return doctorMapper.toDtos(doctorRepository.findAll());
     }
 
@@ -58,9 +57,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public DoctorDto CreateDoctor(RegisterDoctorDto dto) {
-        log.info("CreateDoctor");
-        log.info("dto={}", dto.email);
-        log.info("dto={}", dto.name);
         if (doctorRepository.existsDoctorByEmail(dto.email))
         {
             throw new IllegalArgumentException("Doctor already exists");

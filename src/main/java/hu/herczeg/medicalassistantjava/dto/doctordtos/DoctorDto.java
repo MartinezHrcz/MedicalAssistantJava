@@ -1,6 +1,7 @@
 package hu.herczeg.medicalassistantjava.dto.doctordtos;
 
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 @Builder
 @Getter

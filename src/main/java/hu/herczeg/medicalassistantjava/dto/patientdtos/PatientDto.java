@@ -10,11 +10,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatientDto {
-    public Long Id;
-    public String Name;
-    public String Address;
-    public String Taj;
-    public String Complaints;
-    public LocalDateTime TimeOfAdmission;
+    public Long id;
+    public String name;
+    public String address;
+    public String taj;
+    public String complaints;
+    public Long doctor_id;
+    public LocalDateTime timeOfAdmission;
 }
 
