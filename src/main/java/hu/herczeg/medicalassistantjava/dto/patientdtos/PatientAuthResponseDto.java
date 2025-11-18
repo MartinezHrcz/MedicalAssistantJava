@@ -1,14 +1,12 @@
 package hu.herczeg.medicalassistantjava.dto.patientdtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class PatientAuthResponseDto{
     PatientDto patientDto;
     public String token;

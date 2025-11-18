@@ -43,5 +43,6 @@ public class Patient {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    public List<Medication> medications;
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Medication> medications;
 }

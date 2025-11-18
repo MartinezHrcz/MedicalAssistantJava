@@ -6,9 +6,9 @@ import jakarta.validation.constraints.Pattern;
 
 public class LoginDoctorDto{
     @Email
-    public String Email;
+    public String email;
     @NotBlank
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", message = "Password should be atleast 8 characters long, have atleast 1 uppercase 1 lowercase and a special character")
-    public String Password;
+    public String PasswordHash;
 }
 

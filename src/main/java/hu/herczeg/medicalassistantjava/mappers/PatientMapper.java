@@ -6,10 +6,11 @@ import hu.herczeg.medicalassistantjava.dto.patientdtos.RegisterPatientDto;
 import hu.herczeg.medicalassistantjava.model.Patient;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring")
 public interface PatientMapper {
     PatientDto toDto(Patient patient);
 

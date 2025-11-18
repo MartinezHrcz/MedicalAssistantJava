@@ -23,7 +23,7 @@ public class Medication {
 
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
 }

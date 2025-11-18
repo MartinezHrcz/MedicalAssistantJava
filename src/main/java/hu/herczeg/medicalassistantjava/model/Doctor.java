@@ -33,6 +33,6 @@ public class Doctor {
     @Column(nullable = false, length = 100)
     private String email;
 
-    private String PasswordHash;
+    private String passwordHash;
 
 }

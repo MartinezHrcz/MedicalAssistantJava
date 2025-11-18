@@ -1,19 +1,17 @@
 package hu.herczeg.medicalassistantjava.dto.doctordtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class DoctorDto {
-    public int Id;
-    public String Name;
-    public String Address;
-    public String Phone;
-    public String Email;
+    public long id;
+    public String name;
+    public String address;
+    public String phoneNumber;
+    public String email;
 }
 

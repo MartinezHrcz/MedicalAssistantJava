@@ -10,13 +10,14 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UpdateDoctorDto{
     @NotBlank(message = "Name cannot be blank")
     @Pattern(regexp = "^[A-Za-zÀ-ž\\ \\s'-]{2,50}$", message = "Name should only contain letters, spaces or hypens!")
-    public String Name;
+    public String name;
     @Nullable
-    public String Address;
-    public String Phone;
+    public String address;
+    public String phone;
     @Email
-    public String Email;
+    public String email;
 }

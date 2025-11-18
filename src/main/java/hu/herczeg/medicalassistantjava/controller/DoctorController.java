@@ -5,14 +5,16 @@ import hu.herczeg.medicalassistantjava.dto.doctordtos.*;
 import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientDto;
 import hu.herczeg.medicalassistantjava.model.Doctor;
 import hu.herczeg.medicalassistantjava.service.interfaces.DoctorService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@RequestMapping
+@RequestMapping("/api/doctor")
 @RestController
+@Slf4j
 public class DoctorController {
 
     private final DoctorService doctorService;
@@ -53,11 +55,14 @@ public class DoctorController {
 
     @PostMapping
     public ResponseEntity<DoctorDto> createDoctor(@RequestBody RegisterDoctorDto doctorDto){
+        log.info("Creating");
+        log.info("doctorDto={}", doctorDto.toString());
         try {
             return ResponseEntity.ok(doctorService.CreateDoctor(doctorDto));
         }
         catch (Exception e)
         {
+            log.error("Exception={}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
