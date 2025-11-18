@@ -11,6 +11,7 @@ import hu.herczeg.medicalassistantjava.model.Patient;
 import hu.herczeg.medicalassistantjava.repository.DoctorRepository;
 import hu.herczeg.medicalassistantjava.repository.PatientRepository;
 import hu.herczeg.medicalassistantjava.service.interfaces.DoctorService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
@@ -37,6 +39,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<DoctorDto> GetAllDoctors() {
+        log.info("GetAllDoctors");
         return doctorMapper.toDtos(doctorRepository.findAll());
     }
 
@@ -55,12 +58,20 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public DoctorDto CreateDoctor(RegisterDoctorDto dto) {
-        if (doctorRepository.findByEmailEquals(dto.Email))
+        log.info("CreateDoctor");
+        log.info("dto={}", dto.email);
+        log.info("dto={}", dto.name);
+        if (doctorRepository.existsDoctorByEmail(dto.email))
         {
             throw new IllegalArgumentException("Doctor already exists");
         }
         Doctor doctor = doctorMapper.toEntity(dto);
-        doctor.setPasswordHash(passwordEncoder.encode(dto.Password));
+        doctor= new Doctor();
+        doctor.setName(dto.getName());
+        doctor.setAddress(dto.getAddress());
+        doctor.setPhoneNumber(dto.getPhoneNumber());
+        doctor.setEmail(dto.getEmail());
+        doctor.setPasswordHash(passwordEncoder.encode(dto.passwordHash));
         doctorRepository.save(doctor);
         return doctorMapper.toDto(doctor);
     }
@@ -70,10 +81,10 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.findById(id).orElseThrow(
                 NoSuchElementException::new
         );
-        doctor.setName(dto.Name);
-        doctor.setEmail(dto.Email);
-        doctor.setAddress(dto.Address);
-        doctor.setPhoneNumber(dto.Phone);
+        doctor.setName(dto.name);
+        doctor.setEmail(dto.email);
+        doctor.setAddress(dto.address);
+        doctor.setPhoneNumber(dto.phone);
         doctorRepository.save(doctor);
         return doctorMapper.toDto(doctor);
     }
@@ -94,7 +105,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public boolean DeleteDoctor(Long id) {
-        if (!doctorRepository.findById(id).isPresent()){
+        if (doctorRepository.findById(id).isEmpty()){
             throw new IllegalArgumentException("Doctor does not exist");
         }
         doctorRepository.deleteById(id);
@@ -137,13 +148,10 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorAuthResponseDto LoginDoctor(LoginDoctorDto loginDoctorDto) {
         Doctor doctor;
-        try {
-            doctor = doctorRepository.findByEmailEqualsIgnoreCase(loginDoctorDto.Email);
-        }catch (Exception e){
-            throw new IllegalArgumentException("Doctor already exists");
-        }
-
-        if (!passwordEncoder.matches(loginDoctorDto.Password, doctor.getPasswordHash())) {
+        doctor = doctorRepository.findByEmailEqualsIgnoreCase(loginDoctorDto.email).orElseThrow(
+                ()-> new NoSuchElementException("Doctor not found")
+        );
+        if (!passwordEncoder.matches(loginDoctorDto.PasswordHash, doctor.getPasswordHash())) {
             throw new IllegalArgumentException("Wrong Password");
         }
 
@@ -156,7 +164,7 @@ public class DoctorServiceImpl implements DoctorService {
         if (patient==null){
             throw new IllegalArgumentException("Patient does not exist");
         }
-        patient.medications.add(new Medication(UUID.randomUUID(),title, medication, patient));
+        patient.getMedications().add(new Medication(UUID.randomUUID(),title, medication, patient));
         patientRepository.save(patient);
     }
 

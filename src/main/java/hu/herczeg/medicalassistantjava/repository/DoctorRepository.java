@@ -5,14 +5,14 @@ import jakarta.validation.constraints.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findAllByNameContainingIgnoreCase(String name);
 
-    boolean findByEmailEquals(String email);
+    Optional<Doctor> findByEmailEqualsIgnoreCase(String email);
 
-    Doctor getDoctorByEmail(@Email String email);
 
-    Doctor findByEmailEqualsIgnoreCase(String email);
+    boolean existsDoctorByEmail(String email);
 }
