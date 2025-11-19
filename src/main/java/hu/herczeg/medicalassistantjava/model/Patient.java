@@ -2,10 +2,7 @@ package hu.herczeg.medicalassistantjava.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.lang.model.util.Elements;
 import java.time.LocalDateTime;
@@ -13,8 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Patient {
@@ -35,9 +33,9 @@ public class Patient {
     @Column(nullable = true, length = 200)
     private String complaints;
 
-    private LocalDateTime timeOfAddmission;
+    private LocalDateTime timeOfAdmission;
 
-    private String passwordhash;
+    private String passwordHash;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")

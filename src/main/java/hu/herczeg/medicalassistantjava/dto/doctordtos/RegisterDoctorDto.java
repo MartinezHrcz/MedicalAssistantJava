@@ -16,10 +16,10 @@ public class RegisterDoctorDto{
     public String name;
     @Nullable
     public String address;
-    public String phoneNumber;
+    public String phone;
     @Email
     public String email;
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", message = "Password should be atleast 8 characters long, have atleast 1 uppercase 1 lowercase and a special character")
-    public String passwordHash;
+    public String password;
 }
 

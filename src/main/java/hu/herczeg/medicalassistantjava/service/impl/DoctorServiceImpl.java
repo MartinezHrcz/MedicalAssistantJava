@@ -62,7 +62,8 @@ public class DoctorServiceImpl implements DoctorService {
             throw new IllegalArgumentException("Doctor already exists");
         }
         Doctor doctor =  doctorMapper.toEntity(dto);
-        doctor.setPasswordHash(passwordEncoder.encode(dto.passwordHash));
+        doctor.setPasswordHash(passwordEncoder.encode(dto.password));
+        log.info(doctor.getPasswordHash());
         doctorRepository.save(doctor);
         return doctorMapper.toDto(doctor);
     }
@@ -142,7 +143,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctor = doctorRepository.findByEmailEqualsIgnoreCase(loginDoctorDto.email).orElseThrow(
                 ()-> new NoSuchElementException("Doctor not found")
         );
-        if (!passwordEncoder.matches(loginDoctorDto.PasswordHash, doctor.getPasswordHash())) {
+        if (!passwordEncoder.matches(loginDoctorDto.password, doctor.getPasswordHash())) {
             throw new IllegalArgumentException("Wrong Password");
         }
 

@@ -13,11 +13,11 @@ import lombok.*;
 public class UpdatePatientDto{
     @NotBlank(message = "Name cannot be blank")
     @Pattern(regexp = "^[A-Za-zÀ-ž\\ \\s'-]{2,50}$", message = "Name should only contain letters, spaces or hypens!")
-    public String Name;
+    public String name;
     @Nullable
-    public String Address;
+    public String address;
     @Pattern(regexp = "^\\d{3}-\\d{3}-\\d{3}$", message = "TAJ must be in 000-000-000 format!")
-    public String Taj;
-    public String Complaints;
+    public String taj;
+    public String complaints;
 }
 

@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatientAuthResponseDto{
-    PatientDto patientDto;
+    PatientDto patient;
     public String token;
 }

@@ -9,6 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorAuthResponseDto{
-    public DoctorDto doctorDto;
-    public String Token;
+    public DoctorDto doctor;
+    public String token;
 }

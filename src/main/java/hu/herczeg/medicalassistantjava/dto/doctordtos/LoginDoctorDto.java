@@ -9,6 +9,6 @@ public class LoginDoctorDto{
     public String email;
     @NotBlank
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", message = "Password should be atleast 8 characters long, have atleast 1 uppercase 1 lowercase and a special character")
-    public String PasswordHash;
+    public String password;
 }
 

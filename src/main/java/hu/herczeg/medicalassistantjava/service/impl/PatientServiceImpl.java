@@ -51,6 +51,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientDto CreatePatient(RegisterPatientDto dto) {
         Patient patient = patientMapper.toEntity(dto);
+        patient.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         patientRepository.save(patient);
         return patientMapper.toDto(patient);
     }
@@ -60,10 +61,10 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = patientRepository.findById(id).orElseThrow(
                 NoSuchElementException::new
         );
-        patient.setName(dto.Name);
-        patient.setTaj(dto.Taj);
-        patient.setAddress(dto.Address);
-        patient.setComplaints(dto.Complaints);
+        patient.setName(dto.name);
+        patient.setTaj(dto.taj);
+        patient.setAddress(dto.address);
+        patient.setComplaints(dto.complaints);
         patientRepository.save(patient);
         return patientMapper.toDto(patient);
     }
@@ -73,10 +74,10 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = patientRepository.findById(id).orElseThrow(
                 NoSuchElementException::new
         );
-        if (!passwordEncoder.matches(dto.oldPassword, patient.getPasswordhash())){
+        if (!passwordEncoder.matches(dto.oldPassword, patient.getPasswordHash())){
             throw new IllegalArgumentException("Old password does not match hash");
         }
-        patient.setPasswordhash(passwordEncoder.encode(dto.newPassword));
+        patient.setPasswordHash(passwordEncoder.encode(dto.newPassword));
         return true;
     }
 
@@ -87,8 +88,8 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientAuthResponseDto LoginPatientAsync(PatientLoginDto dto) {
-        Patient patient = patientRepository.findByTaj(dto.Taj);
-        if(!passwordEncoder.matches(dto.Password, patient.getPasswordhash()))
+        Patient patient = patientRepository.findByTaj(dto.taj);
+        if(!passwordEncoder.matches(dto.password, patient.getPasswordHash()))
         {
             throw new IllegalArgumentException("Old password does not match hash");
         }
