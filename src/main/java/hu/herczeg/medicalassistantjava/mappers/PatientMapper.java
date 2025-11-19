@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PatientMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
@@ -33,13 +33,11 @@ public interface PatientMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "taj", target = "taj")
     @Mapping(source = "address", target = "address")
-    @Mapping(source = "timeOfAdmission", target = "timeOfAdmission")
     @Mapping(source = "complaints", target = "complaints")
     Patient toEntity(RegisterPatientDto dto);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "taj", target = "taj")
-    @Mapping(source = "complaints", target = "complaints")
     PatientMedicationDto toMedicationDto(Patient patient);
 
     List<PatientDto> toDtos(List<Patient> patients);

@@ -21,9 +21,9 @@ public interface DoctorMapper {
 
     @Mapping(source = "name", target = "name")
     @Mapping(source = "address", target = "address")
-    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "phone", target = "phoneNumber")
     @Mapping(source = "email", target = "email")
-    @Mapping(source = "passwordHash", target = "passwordHash")
+    @Mapping(source = "password", target = "passwordHash")
     Doctor toEntity(RegisterDoctorDto dto);
 
     List<DoctorDto> toDtos(List<Doctor> doctors);
