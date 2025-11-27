@@ -1,7 +1,12 @@
 package hu.herczeg.medicalassistantjava.service.impl;
 
 import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
-import hu.herczeg.medicalassistantjava.dto.patientdtos.*;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientMedicationDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientLoginDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.RegisterPatientDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientAuthResponseDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.UpdatePatientDto;
 import hu.herczeg.medicalassistantjava.mappers.PatientMapper;
 import hu.herczeg.medicalassistantjava.model.Patient;
 import hu.herczeg.medicalassistantjava.repository.PatientRepository;
@@ -18,38 +23,39 @@ public class PatientServiceImpl implements PatientService {
     private final PasswordEncoder passwordEncoder;
     private final PatientMapper patientMapper;
 
-    public PatientServiceImpl(PatientRepository patientRepository, PasswordEncoder passwordEncoder, PatientMapper patientMapper) {
+    public PatientServiceImpl(PatientRepository patientRepository,
+                              PasswordEncoder passwordEncoder,
+                              PatientMapper patientMapper) {
         this.patientRepository = patientRepository;
         this.passwordEncoder = passwordEncoder;
         this.patientMapper = patientMapper;
     }
 
     @Override
-    public List<PatientDto> GetAllPatients() {
+    public List<PatientDto> getAllPatients() {
         return patientMapper.toDtos(patientRepository.findAll());
     }
 
     @Override
-    public PatientDto GetPatientById(Long id) {
-        return patientMapper.toDto(patientRepository.findById(id).orElseThrow(
-                NoSuchElementException::new
-        ));
+    public PatientDto getPatientById(Long id) {
+        return patientMapper.toDto(patientRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new));
     }
 
     @Override
-    public List<PatientDto> GetPatientByName(String name) {
+    public List<PatientDto> getPatientByName(String name) {
         List<Patient> patient;
         patient = patientRepository.findAllByNameContainingIgnoreCase(name);
         return patientMapper.toDtos(patient);
     }
 
     @Override
-    public PatientDto GetPatientByTaj(String taj) {
+    public PatientDto getPatientByTaj(String taj) {
         return patientMapper.toDto(patientRepository.findByTaj(taj));
     }
 
     @Override
-    public PatientDto CreatePatient(RegisterPatientDto dto) {
+    public PatientDto createPatient(RegisterPatientDto dto) {
         Patient patient = patientMapper.toEntity(dto);
         patient.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         patientRepository.save(patient);
@@ -57,10 +63,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDto UpdatePatient(Long id, UpdatePatientDto dto) {
-        Patient patient = patientRepository.findById(id).orElseThrow(
-                NoSuchElementException::new
-        );
+    public PatientDto updatePatient(Long id, UpdatePatientDto dto) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
         patient.setName(dto.name);
         patient.setTaj(dto.taj);
         patient.setAddress(dto.address);
@@ -70,11 +75,10 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public boolean UpdatePatientPassword(Long id, PasswordUpdateDto dto) {
-        Patient patient = patientRepository.findById(id).orElseThrow(
-                NoSuchElementException::new
-        );
-        if (!passwordEncoder.matches(dto.oldPassword, patient.getPasswordHash())){
+    public boolean updatePatientPassword(Long id, PasswordUpdateDto dto) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+        if (!passwordEncoder.matches(dto.oldPassword, patient.getPasswordHash())) {
             throw new IllegalArgumentException("Old password does not match hash");
         }
         patient.setPasswordHash(passwordEncoder.encode(dto.newPassword));
@@ -82,22 +86,21 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void DeletePatient(Long id) {
+    public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
 
     @Override
-    public PatientAuthResponseDto LoginPatientAsync(PatientLoginDto dto) {
+    public PatientAuthResponseDto loginPatientAsync(PatientLoginDto dto) {
         Patient patient = patientRepository.findByTaj(dto.taj);
-        if(!passwordEncoder.matches(dto.password, patient.getPasswordHash()))
-        {
+        if (!passwordEncoder.matches(dto.password, patient.getPasswordHash())) {
             throw new IllegalArgumentException("Old password does not match hash");
         }
         return new PatientAuthResponseDto(patientMapper.toDto(patient), "");
     }
 
     @Override
-    public PatientMedicationDto GetPatientMedication(String taj) {
+    public PatientMedicationDto getPatientMedication(String taj) {
         Patient patient = patientRepository.findByTaj(taj);
         return patientMapper.toMedicationDto(patient);
     }

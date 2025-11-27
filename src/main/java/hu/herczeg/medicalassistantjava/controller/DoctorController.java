@@ -35,13 +35,13 @@ public class DoctorController {
 
     @GetMapping
     public ResponseEntity<List<DoctorDto>> getAllDoctors() {
-        return ResponseEntity.ok(doctorService.GetAllDoctors());
+        return ResponseEntity.ok(doctorService.getAllDoctors());
     }
 
     @GetMapping("{id}")
     public ResponseEntity<DoctorDto> getDoctorById(@PathVariable long id) {
         try {
-            return ResponseEntity.ok(doctorService.GetDoctorById(id));
+            return ResponseEntity.ok(doctorService.getDoctorById(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -49,13 +49,13 @@ public class DoctorController {
 
     @GetMapping("byname/{name}")
     public ResponseEntity<List<DoctorDto>> getDoctorByName(@PathVariable String name) {
-        return ResponseEntity.ok(doctorService.GetDoctorByName(name));
+        return ResponseEntity.ok(doctorService.getDoctorByName(name));
     }
 
     @GetMapping("my_patients/{id}")
     public ResponseEntity<List<PatientDto>> getDoctorsByName(@PathVariable long id) {
         try {
-            return ResponseEntity.ok(doctorService.GetPatientsOfDoctor(id));
+            return ResponseEntity.ok(doctorService.getPatientsOfDoctor(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -66,7 +66,7 @@ public class DoctorController {
         log.info("Creating");
         log.info("doctorDto={}", doctorDto.toString());
         try {
-            return ResponseEntity.ok(doctorService.CreateDoctor(doctorDto));
+            return ResponseEntity.ok(doctorService.createDoctor(doctorDto));
         } catch (Exception e) {
             log.error("Exception={}", e.getMessage());
             return ResponseEntity.badRequest().build();
@@ -76,7 +76,7 @@ public class DoctorController {
     @PutMapping("pwd_update/{id}")
     public ResponseEntity updateDoctorPwd(@PathVariable long id, @RequestBody PasswordUpdateDto dto) {
         try {
-            if (doctorService.UpdateDoctorPassword(id, dto)) {
+            if (doctorService.updateDoctorPassword(id, dto)) {
                 return ResponseEntity.ok().build();
             }
             return ResponseEntity.badRequest().build();
@@ -88,7 +88,7 @@ public class DoctorController {
     @PostMapping("{id}")
     public ResponseEntity<DoctorDto> updateDoctor(@PathVariable long id,@RequestBody UpdateDoctorDto doctorDto) {
         try {
-            return ResponseEntity.ok(doctorService.UpdateDoctor(id, doctorDto));
+            return ResponseEntity.ok(doctorService.updateDoctor(id, doctorDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -97,7 +97,7 @@ public class DoctorController {
     @PutMapping("addpatient/{doctorid}-{patientid}")
     public ResponseEntity addPatient(@PathVariable long doctorid, @PathVariable long patientid) {
         try {
-            doctorService.AddPatient(doctorid, patientid);
+            doctorService.addPatient(doctorid, patientid);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -107,7 +107,7 @@ public class DoctorController {
     @PostMapping("login")
     public ResponseEntity<DoctorAuthResponseDto> loginDoctor(@RequestBody LoginDoctorDto dto) {
         try {
-            return  ResponseEntity.ok(doctorService.LoginDoctor(dto));
+            return  ResponseEntity.ok(doctorService.loginDoctor(dto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -116,7 +116,7 @@ public class DoctorController {
     @DeleteMapping("delete/{id}")
     public ResponseEntity deleteDoctor(@PathVariable long id) {
         try {
-            doctorService.DeleteDoctor(id);
+            doctorService.deleteDoctor(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -126,7 +126,7 @@ public class DoctorController {
     @PutMapping("removepatient/{doctorid}-{patientid}")
     public ResponseEntity removePatient(@PathVariable long doctorid, @PathVariable long patientid) {
         try {
-            doctorService.RemovePatient(doctorid, patientid);
+            doctorService.removePatient(doctorid, patientid);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -138,7 +138,7 @@ public class DoctorController {
                                         @PathVariable String title,
                                         @PathVariable String medication) {
         try {
-            doctorService.AddPatientMedication(patientTaj,title,medication);
+            doctorService.addPatientMedication(patientTaj,title,medication);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -148,7 +148,7 @@ public class DoctorController {
     @DeleteMapping("medication/{patientTaj}_{medicationid}")
     public ResponseEntity deleteMedication(@PathVariable String patientTaj, @PathVariable UUID medicationid) {
         try {
-            doctorService.RemovePatientMedication(patientTaj,medicationid);
+            doctorService.removePatientMedication(patientTaj,medicationid);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

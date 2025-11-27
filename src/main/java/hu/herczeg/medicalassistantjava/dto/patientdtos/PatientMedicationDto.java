@@ -1,7 +1,11 @@
 package hu.herczeg.medicalassistantjava.dto.patientdtos;
 
 import hu.herczeg.medicalassistantjava.model.Medication;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 
@@ -11,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class PatientMedicationDto{
+public class PatientMedicationDto {
     public Long id;
     public String taj;
     private List<Medication> medications;

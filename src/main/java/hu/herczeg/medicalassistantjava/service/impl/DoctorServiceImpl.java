@@ -1,7 +1,11 @@
 package hu.herczeg.medicalassistantjava.service.impl;
 
 import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
-import hu.herczeg.medicalassistantjava.dto.doctordtos.*;
+import hu.herczeg.medicalassistantjava.dto.doctordtos.RegisterDoctorDto;
+import hu.herczeg.medicalassistantjava.dto.doctordtos.DoctorDto;
+import hu.herczeg.medicalassistantjava.dto.doctordtos.UpdateDoctorDto;
+import hu.herczeg.medicalassistantjava.dto.doctordtos.DoctorAuthResponseDto;
+import hu.herczeg.medicalassistantjava.dto.doctordtos.LoginDoctorDto;
 import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientDto;
 import hu.herczeg.medicalassistantjava.mappers.DoctorMapper;
 import hu.herczeg.medicalassistantjava.mappers.PatientMapper;
@@ -29,7 +33,11 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorMapper doctorMapper;
     private final PatientMapper patientMapper;
 
-    public DoctorServiceImpl(DoctorRepository doctorRepository, PatientRepository patientRepository, PasswordEncoder passwordEncoder, DoctorMapper doctorMapper, PatientMapper patientMapper) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository,
+                             PatientRepository patientRepository,
+                             PasswordEncoder passwordEncoder,
+                             DoctorMapper doctorMapper,
+                             PatientMapper patientMapper) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
         this.passwordEncoder = passwordEncoder;
@@ -38,27 +46,24 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DoctorDto> GetAllDoctors() {
+    public List<DoctorDto> getAllDoctors() {
         return doctorMapper.toDtos(doctorRepository.findAll());
     }
 
     @Override
-    public DoctorDto GetDoctorById(Long id) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow(
-                NoSuchElementException::new
-        );
+    public DoctorDto getDoctorById(Long id) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(NoSuchElementException::new);
         return doctorMapper.toDto(doctor);
     }
 
     @Override
-    public List<DoctorDto> GetDoctorByName(String name) {
+    public List<DoctorDto> getDoctorByName(String name) {
         return doctorMapper.toDtos(doctorRepository.findAllByNameContainingIgnoreCase(name));
     }
 
     @Override
-    public DoctorDto CreateDoctor(RegisterDoctorDto dto) {
-        if (doctorRepository.existsDoctorByEmail(dto.email))
-        {
+    public DoctorDto createDoctor(RegisterDoctorDto dto) {
+        if (doctorRepository.existsDoctorByEmail(dto.email)) {
             throw new IllegalArgumentException("Doctor already exists");
         }
         Doctor doctor =  doctorMapper.toEntity(dto);
@@ -69,10 +74,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public DoctorDto UpdateDoctor(Long id, UpdateDoctorDto dto) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow(
-                NoSuchElementException::new
-        );
+    public DoctorDto updateDoctor(Long id, UpdateDoctorDto dto) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(NoSuchElementException::new);
         doctor.setName(dto.name);
         doctor.setEmail(dto.email);
         doctor.setAddress(dto.address);
@@ -82,12 +85,9 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean UpdateDoctorPassword(Long id, PasswordUpdateDto dto) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow(
-                NoSuchElementException::new
-        );
-        if (!passwordEncoder.matches(doctor.getPasswordHash(), dto.oldPassword))
-        {
+    public boolean updateDoctorPassword(Long id, PasswordUpdateDto dto) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        if (!passwordEncoder.matches(doctor.getPasswordHash(), dto.oldPassword)) {
             throw new IllegalArgumentException("Old Password does not match");
         }
         doctor.setPasswordHash(passwordEncoder.encode(dto.newPassword));
@@ -96,8 +96,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean DeleteDoctor(Long id) {
-        if (doctorRepository.findById(id).isEmpty()){
+    public boolean deleteDoctor(Long id) {
+        if (doctorRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Doctor does not exist");
         }
         doctorRepository.deleteById(id);
@@ -105,44 +105,40 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<PatientDto> GetPatientsOfDoctor(Long id) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow(
-                NoSuchElementException::new
-        );
+    public List<PatientDto> getPatientsOfDoctor(Long id) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(NoSuchElementException::new);
         List<Patient> patients = patientRepository.findAllByDoctor(doctor);
         return patientMapper.toDtos(patients);
     }
 
     @Override
-    public void AddPatient(Long doctorId, Long patientId) {
-        Patient patient = patientRepository.findById(patientId).orElseThrow(
-                NoSuchElementException::new
-        );
-        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(
-                NoSuchElementException::new
-        );
+    public void addPatient(Long doctorId, Long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(NoSuchElementException::new);
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(NoSuchElementException::new);
         patient.setDoctor(doctor);
         patientRepository.save(patient);
     }
 
     @Override
-    public void RemovePatient(Long doctorId, Long patientId) {
-        Patient patient = patientRepository.findById(patientId).orElseThrow(
-                NoSuchElementException::new
-        );
-        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(
-                NoSuchElementException::new
-        );
+    public void removePatient(Long doctorId, Long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(NoSuchElementException::new);
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(NoSuchElementException::new);
+        if (!patient.getDoctor().equals(doctor)) {
+            throw new IllegalArgumentException("Patient does not belong to doctor");
+        }
         patient.setDoctor(null);
         patientRepository.save(patient);
     }
 
     @Override
-    public DoctorAuthResponseDto LoginDoctor(LoginDoctorDto loginDoctorDto) {
+    public DoctorAuthResponseDto loginDoctor(LoginDoctorDto loginDoctorDto) {
         Doctor doctor;
         doctor = doctorRepository.findByEmailEqualsIgnoreCase(loginDoctorDto.email).orElseThrow(
-                ()-> new NoSuchElementException("Doctor not found")
-        );
+                () -> new NoSuchElementException("Doctor not found"));
         if (!passwordEncoder.matches(loginDoctorDto.password, doctor.getPasswordHash())) {
             throw new IllegalArgumentException("Wrong Password");
         }
@@ -151,25 +147,27 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public void AddPatientMedication(String taj, String title, String medication) {
+    public void addPatientMedication(String taj, String title, String medication) {
         Patient patient = patientRepository.findByTaj(taj);
-        if (patient==null){
+        if (patient == null) {
             throw new IllegalArgumentException("Patient does not exist");
         }
-        patient.getMedications().add(new Medication(UUID.randomUUID(),title, medication, patient));
+        patient.getMedications()
+                .add(new Medication(UUID.randomUUID(),title, medication, patient));
         patientRepository.save(patient);
     }
 
     @Override
-    public void RemovePatientMedication(String taj, UUID medication) {
+    public void removePatientMedication(String taj, UUID medication) {
         Patient patient = patientRepository.findByTaj(taj);
-        if (patient==null){
+        if (patient == null) {
             throw new IllegalArgumentException("Patient does not exist");
         }
-        if (patient.getMedications().stream().noneMatch(m->m.getId().equals(medication))){
-            throw new  IllegalArgumentException("Medication does not exist");
+        if (patient.getMedications()
+                .stream().noneMatch(m -> m.getId().equals(medication))) {
+            throw new IllegalArgumentException("Medication does not exist");
         }
-        patient.getMedications().removeIf(m->m.getId().equals(medication));
+        patient.getMedications().removeIf(m -> m.getId().equals(medication));
         patientRepository.save(patient);
     }
 }

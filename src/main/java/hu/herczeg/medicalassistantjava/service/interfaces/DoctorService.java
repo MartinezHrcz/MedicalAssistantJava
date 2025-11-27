@@ -8,17 +8,29 @@ import java.util.List;
 import java.util.UUID;
 
 public interface DoctorService {
-    List<DoctorDto> GetAllDoctors();
-    DoctorDto GetDoctorById(Long id);
-    List<DoctorDto> GetDoctorByName(String name);
-    DoctorDto CreateDoctor(RegisterDoctorDto dto);
-    DoctorDto UpdateDoctor(Long id, UpdateDoctorDto dto);
-    boolean UpdateDoctorPassword(Long id, PasswordUpdateDto dto);
-    boolean DeleteDoctor(Long id);
-    List<PatientDto> GetPatientsOfDoctor(Long id);
-    void AddPatient(Long doctorId, Long patientId);
-    void RemovePatient(Long doctorId, Long patientId);
-    DoctorAuthResponseDto LoginDoctor(LoginDoctorDto loginDoctorDto);
-    void AddPatientMedication(String taj, String title, String medication);
-    void RemovePatientMedication(String taj, UUID medication);
+    List<DoctorDto> getAllDoctors();
+
+    DoctorDto getDoctorById(Long id);
+
+    List<DoctorDto> getDoctorByName(String name);
+
+    DoctorDto createDoctor(RegisterDoctorDto dto);
+
+    DoctorDto updateDoctor(Long id, UpdateDoctorDto dto);
+
+    boolean updateDoctorPassword(Long id, PasswordUpdateDto dto);
+
+    boolean deleteDoctor(Long id);
+
+    List<PatientDto> getPatientsOfDoctor(Long id);
+
+    void addPatient(Long doctorId, Long patientId);
+
+    void removePatient(Long doctorId, Long patientId);
+
+    DoctorAuthResponseDto loginDoctor(LoginDoctorDto loginDoctorDto);
+
+    void addPatientMedication(String taj, String title, String medication);
+
+    void removePatientMedication(String taj, UUID medication);
 }

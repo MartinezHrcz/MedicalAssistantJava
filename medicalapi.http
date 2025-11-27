@@ -1,0 +1,22 @@
+GET localhost:5249/api/doctor
+###
+GET localhost:5249/api/doctor/1
+
+###
+GET localhost:5249/api/doctor/byname/Martinez
+
+
+### Add doctor 1.
+POST localhost:5249/api/doctor
+Content-Type: application/json
+
+{
+    "name":"Martinez",
+    "address":"Hajnal str",
+    "phone":"12345",
+    "email":"martiez@gmail.com",
+    "password":"Aa1234567!"
+}
+
+###
+DELETE localhost:5249/api/doctor/delete/3

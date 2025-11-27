@@ -32,13 +32,13 @@ public class PatientController {
 
     @GetMapping
     public ResponseEntity<List<PatientDto>> getAll() {
-        return ResponseEntity.ok(patientService.GetAllPatients());
+        return ResponseEntity.ok(patientService.getAllPatients());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PatientDto> getById(@PathVariable("id") Long id) {
         try {
-            return ResponseEntity.ok(patientService.GetPatientById(id));
+            return ResponseEntity.ok(patientService.getPatientById(id));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -46,13 +46,13 @@ public class PatientController {
 
     @GetMapping("/byname/{name}")
     public ResponseEntity<List<PatientDto>> getByName(@PathVariable("name") String name) {
-        return ResponseEntity.ok(patientService.GetPatientByName(name));
+        return ResponseEntity.ok(patientService.getPatientByName(name));
     }
 
     @GetMapping("/bytaj/{taj}")
     public ResponseEntity<PatientDto> getBytaj(@PathVariable("taj") String taj) {
         try {
-            return ResponseEntity.ok(patientService.GetPatientByTaj(taj));
+            return ResponseEntity.ok(patientService.getPatientByTaj(taj));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -61,7 +61,7 @@ public class PatientController {
     @PostMapping
     public ResponseEntity<PatientDto> create(@RequestBody RegisterPatientDto registerPatientDto) {
         try {
-            return ResponseEntity.ok(patientService.CreatePatient(registerPatientDto));
+            return ResponseEntity.ok(patientService.createPatient(registerPatientDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -70,7 +70,7 @@ public class PatientController {
     @PutMapping("{id}")
     public ResponseEntity<PatientDto> update(@PathVariable long id,@RequestBody UpdatePatientDto updatePatientDto) {
         try {
-            return ResponseEntity.ok(patientService.UpdatePatient(id,updatePatientDto));
+            return ResponseEntity.ok(patientService.updatePatient(id,updatePatientDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,7 +79,7 @@ public class PatientController {
     @PutMapping("pwdupdate/{id}")
     public ResponseEntity updatePwd(@PathVariable long id, @RequestBody PasswordUpdateDto dto) {
         try {
-            return patientService.UpdatePatientPassword(id, dto)
+            return patientService.updatePatientPassword(id, dto)
                     ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -89,7 +89,7 @@ public class PatientController {
     @DeleteMapping("{id}")
     public ResponseEntity delete(@PathVariable long id) {
         try {
-            patientService.DeletePatient(id);
+            patientService.deletePatient(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -99,7 +99,7 @@ public class PatientController {
     @PostMapping("login")
     public ResponseEntity<PatientAuthResponseDto> login(@RequestBody PatientLoginDto dto) {
         try {
-            return ResponseEntity.ok(patientService.LoginPatientAsync(dto));
+            return ResponseEntity.ok(patientService.loginPatientAsync(dto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -108,7 +108,7 @@ public class PatientController {
     @GetMapping("/medication/{taj}")
     public ResponseEntity<PatientMedicationDto> getMedication(@PathVariable String taj) {
         try {
-            return ResponseEntity.ok(patientService.GetPatientMedication(taj));
+            return ResponseEntity.ok(patientService.getPatientMedication(taj));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
