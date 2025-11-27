@@ -19,7 +19,7 @@ public interface PatientMapper {
     @Mapping(source = "address", target = "address")
     @Mapping(source = "timeOfAdmission", target = "timeOfAdmission")
     @Mapping(source = "complaints", target = "complaints")
-    @Mapping(source = "doctor.id", target = "doctor_id")
+    @Mapping(source = "doctor.id", target = "doctorId")
     PatientDto toDto(Patient patient);
 
     @Mapping(source = "id", target = "id")

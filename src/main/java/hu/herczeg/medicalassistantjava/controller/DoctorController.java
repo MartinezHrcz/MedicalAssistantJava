@@ -53,7 +53,7 @@ public class DoctorController {
     }
 
     @GetMapping("my_patients/{id}")
-    public ResponseEntity<List<PatientDto>> getDoctorsByName(@PathVariable long id) {
+    public ResponseEntity<List<PatientDto>> getPatients(@PathVariable long id) {
         try {
             return ResponseEntity.ok(doctorService.getPatientsOfDoctor(id));
         } catch (Exception e) {

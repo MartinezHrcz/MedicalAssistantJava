@@ -14,9 +14,12 @@ Content-Type: application/json
     "name":"Martinez",
     "address":"Hajnal str",
     "phone":"12345",
-    "email":"martiez@gmail.com",
+    "email":"martinez@gmail.com",
     "password":"Aa1234567!"
 }
 
 ###
 DELETE localhost:5249/api/doctor/delete/3
+
+###
+GET localhost:5249/api/patient/medication/987-645-321

@@ -19,7 +19,7 @@ public class PatientDto {
     public String address;
     public String taj;
     public String complaints;
-    public Long doctor_id;
+    public Long doctorId = null;
     public LocalDateTime timeOfAdmission;
 }
 

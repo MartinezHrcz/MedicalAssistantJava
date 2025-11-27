@@ -1,5 +1,6 @@
 package hu.herczeg.medicalassistantjava.dto.patientdtos;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hu.herczeg.medicalassistantjava.model.Medication;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import java.util.List;
 public class PatientMedicationDto {
     public Long id;
     public String taj;
+    @JsonManagedReference
     private List<Medication> medications;
 }
 
