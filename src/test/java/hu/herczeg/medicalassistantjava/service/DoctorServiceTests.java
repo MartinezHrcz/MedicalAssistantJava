@@ -1,9 +1,11 @@
 package hu.herczeg.medicalassistantjava.service;
 
 import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
+import hu.herczeg.medicalassistantjava.dto.doctordtos.LoginDoctorDto;
 import hu.herczeg.medicalassistantjava.dto.doctordtos.RegisterDoctorDto;
 import hu.herczeg.medicalassistantjava.dto.doctordtos.UpdateDoctorDto;
 import hu.herczeg.medicalassistantjava.model.Doctor;
+import hu.herczeg.medicalassistantjava.model.Medication;
 import hu.herczeg.medicalassistantjava.model.Patient;
 import hu.herczeg.medicalassistantjava.repository.DoctorRepository;
 import hu.herczeg.medicalassistantjava.repository.PatientRepository;
@@ -16,9 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -208,4 +208,64 @@ public class DoctorServiceTests {
 
         assertThrows(NoSuchElementException.class, () -> doctorService.removePatient(1L,2L));
     }
+
+    @Test
+    public void validCreditentials_LoginDoctor_Success() {
+        when(doctorRepository.findByEmailEqualsIgnoreCase(anyString())).thenReturn(Optional.of(doctor));
+        when(passwordEncoder.matches(any(), any())).thenReturn(true);
+
+        var result = doctorService.loginDoctor(new LoginDoctorDto("email@gmail.com", "password"));
+
+        assertNotNull(result);
+        assertEquals(doctor.getName(), result.getDoctor().name);
+    }
+
+    @Test
+    public void invalidPassword_LoginDoctor_Fail() {
+        when(doctorRepository.findByEmailEqualsIgnoreCase(anyString())).thenReturn(Optional.of(doctor));
+        when(passwordEncoder.matches(any(), any())).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> doctorService.loginDoctor(new LoginDoctorDto("email@gmail.com", "password")));
+    }
+    @Test
+    public void invalidEmail_LoginDoctor_Fail() {
+        when(doctorRepository.findByEmailEqualsIgnoreCase(anyString())).thenReturn(Optional.empty());
+        when(passwordEncoder.matches(any(), any())).thenReturn(true);
+
+        assertThrows(NoSuchElementException.class,
+                () -> doctorService.loginDoctor(new LoginDoctorDto("email@gmail.com", "password")));
+    }
+
+    @Test
+    public void addPatientMedication_Success() {
+        Patient patient = Patient.builder()
+                .medications(new ArrayList<Medication>()).build();
+        when(patientRepository.findByTaj(anyString())).thenReturn(patient);
+        assertDoesNotThrow(() -> doctorService.addPatientMedication("111-111-111", "title", "description"));
+    }
+
+    @Test
+    public void addPatientMedication_Fail() {
+        when(patientRepository.findByTaj(anyString())).thenReturn(null);
+        assertThrows(IllegalArgumentException.class,() -> doctorService.addPatientMedication("111-111-111", "title", "description"));
+    }
+
+    @Test
+    public void nomedication_RemovePatientMedication_Fail() {
+        UUID medication = UUID.randomUUID();
+        Patient patient = Patient.builder()
+                .medications(new ArrayList<Medication>()).build();
+        when(patientRepository.findByTaj(anyString())).thenReturn(patient);
+
+        assertThrows(IllegalArgumentException.class,() -> doctorService.removePatientMedication("111-111-111", medication));
+
+    }
+
+    @Test
+    public void removePatientMedication_Fail() {
+        when(patientRepository.findByTaj(anyString())).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> doctorService.removePatientMedication("111-111-111", UUID.randomUUID()));
+    }
+
 }
