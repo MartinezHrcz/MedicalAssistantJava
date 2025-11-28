@@ -1,7 +1,12 @@
 package hu.herczeg.medicalassistantjava.service.interfaces;
 
 import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
-import hu.herczeg.medicalassistantjava.dto.patientdtos.*;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.RegisterPatientDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientLoginDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientAuthResponseDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientMedicationDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.UpdatePatientDto;
+import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientDto;
 import hu.herczeg.medicalassistantjava.model.Patient;
 
 import java.util.List;
