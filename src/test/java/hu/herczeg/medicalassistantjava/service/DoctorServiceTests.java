@@ -4,7 +4,9 @@ import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
 import hu.herczeg.medicalassistantjava.dto.doctordtos.RegisterDoctorDto;
 import hu.herczeg.medicalassistantjava.dto.doctordtos.UpdateDoctorDto;
 import hu.herczeg.medicalassistantjava.model.Doctor;
+import hu.herczeg.medicalassistantjava.model.Patient;
 import hu.herczeg.medicalassistantjava.repository.DoctorRepository;
+import hu.herczeg.medicalassistantjava.repository.PatientRepository;
 import hu.herczeg.medicalassistantjava.service.interfaces.DoctorService;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,9 @@ public class DoctorServiceTests {
 
     @MockitoBean
     private DoctorRepository doctorRepository;
+
+    @MockitoBean
+    private PatientRepository patientRepository;
 
     @MockitoBean
     private PasswordEncoder passwordEncoder;
@@ -156,5 +161,51 @@ public class DoctorServiceTests {
         assertThrows(IllegalArgumentException.class, () -> doctorService.deleteDoctor(1L));
     }
 
+    @Test
+    public void validId_GetPatients_Success() {
+        when(patientRepository.findAllByDoctor(any(Doctor.class))).thenReturn(List.of(new Patient()));
 
+        assertNotNull(doctorService.getPatientsOfDoctor(1L));
+    }
+
+    @Test
+    public void invalidId_GetPatients_Fail() {
+        when(doctorRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> doctorService.getPatientsOfDoctor(1L));
+    }
+
+    @Test
+    public void validIds_AddPatient_Success() {
+        when(patientRepository.findById(anyLong())).thenReturn(Optional.of(new Patient()));
+        when(doctorRepository.findById(anyLong())).thenReturn(Optional.of(new Doctor()));
+
+        doctorService.addPatient(1L,2L);
+        verify(patientRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void invalidIds_AddPatient_Fail() {
+        when(patientRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(doctorRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> doctorService.addPatient(1L,2L));
+        verify(patientRepository, times(0)).save(any());
+    }
+
+    @Test
+    public void validIds_RemovePatient_Success() {
+        when(patientRepository.findById(anyLong())).thenReturn(Optional.of(new Patient()));
+        when(doctorRepository.findById(anyLong())).thenReturn(Optional.of(new Doctor()));
+
+        doctorService.removePatient(1L,2L);
+        verify(patientRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void invalidIds_RemovePatient_Fail() {
+        when(patientRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(doctorRepository.findById(anyLong())).thenReturn(Optional.of(new Doctor()));
+
+        assertThrows(NoSuchElementException.class, () -> doctorService.removePatient(1L,2L));
+    }
 }

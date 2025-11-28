@@ -126,8 +126,10 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(NoSuchElementException::new);
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(NoSuchElementException::new);
-        if (!patient.getDoctor().equals(doctor)) {
-            throw new IllegalArgumentException("Patient does not belong to doctor");
+        if (patient.getDoctor() != null) {
+            if (!patient.getDoctor().equals(doctor)) {
+                throw new IllegalArgumentException("Patient does not belong to doctor");
+            }
         }
         patient.setDoctor(null);
         patientRepository.save(patient);
