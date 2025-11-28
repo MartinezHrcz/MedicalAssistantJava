@@ -68,7 +68,6 @@ public class DoctorServiceImpl implements DoctorService {
         }
         Doctor doctor =  doctorMapper.toEntity(dto);
         doctor.setPasswordHash(passwordEncoder.encode(dto.password));
-        log.info(doctor.getPasswordHash());
         doctorRepository.save(doctor);
         return doctorMapper.toDto(doctor);
     }
