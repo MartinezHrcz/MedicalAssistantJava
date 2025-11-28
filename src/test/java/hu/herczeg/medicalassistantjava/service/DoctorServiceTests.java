@@ -1,6 +1,8 @@
 package hu.herczeg.medicalassistantjava.service;
 
+import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
 import hu.herczeg.medicalassistantjava.dto.doctordtos.RegisterDoctorDto;
+import hu.herczeg.medicalassistantjava.dto.doctordtos.UpdateDoctorDto;
 import hu.herczeg.medicalassistantjava.model.Doctor;
 import hu.herczeg.medicalassistantjava.repository.DoctorRepository;
 import hu.herczeg.medicalassistantjava.service.interfaces.DoctorService;
@@ -96,4 +98,63 @@ public class DoctorServiceTests {
 
         assertThrows(IllegalArgumentException.class, () -> doctorService.createDoctor(dto));
     }
+
+    @Test
+    public void validId_UpdateDoctor_Success(){
+        UpdateDoctorDto dto = new UpdateDoctorDto("newName", "address", "123", "email@gmail.com");
+        when(doctorRepository.findById(1L)).thenReturn(Optional.of(doctor));
+
+        var result = doctorService.updateDoctor(1L,dto);
+
+        assertNotNull(result);
+        assertEquals(dto.getEmail(), result.getEmail());
+        assertEquals(dto.getName(), result.getName());
+        assertEquals(dto.getAddress(), result.getAddress());
+        verify(doctorRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void invalidId_UpdateDoctor_Fail() {
+        UpdateDoctorDto dto = new UpdateDoctorDto();
+        when(doctorRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> doctorService.updateDoctor(1L,dto));
+    }
+
+    @Test
+    public void pwdMatch_UpdatePwd_Success() {
+        PasswordUpdateDto dto = new PasswordUpdateDto("password1234!","NewPWD12345");
+        when(passwordEncoder.matches(any(), any())).thenReturn(true);
+
+        assertTrue(doctorService.updateDoctorPassword(1L, dto));
+    }
+
+    @Test
+    public void pwdNoMatch_UpdatePwd_Fail() {
+        when(passwordEncoder.matches(any(), any())).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> doctorService.updateDoctorPassword(1L, new PasswordUpdateDto()));
+    }
+
+    @Test
+    public void invalidId_UpdatePwd_Fail() {
+        when(doctorRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> doctorService.updateDoctorPassword(1L,new PasswordUpdateDto()));
+    }
+
+    @Test
+    public void validId_DeleteDoctor_Success() {
+        when(doctorRepository.findById(1L)).thenReturn(Optional.of(doctor));
+        doNothing().when(doctorRepository).deleteById(anyLong());
+
+        assertTrue(doctorService.deleteDoctor(1L));
+    }
+
+    @Test
+    public void invalidId_DeleteDoctor_Fail() {
+        when(doctorRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> doctorService.deleteDoctor(1L));
+    }
+
+
 }
