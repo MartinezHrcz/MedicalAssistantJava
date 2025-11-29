@@ -1,0 +1,61 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build-and-test:
+    name: Build, Test, and Generate Jacoco Report
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17' 
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build and Run Tests with Maven (Generating Jacoco Report)
+        run: mvn clean install -DskipTests=false
+        
+      - name: Upload Jacoco Coverage Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+          
+      - name: Upload JAR as Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: medical-backend-jar
+          path: target/*.jar
+
+---
+
+  build-docker-image:
+    name: Build Local Docker Image
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download JAR Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: medical-backend-jar
+          path: target/ 
+          
+      - name: Build the 'backend' service image using Docker Compose
+        run: docker compose build backend
+        
+      - name: Verify Image Was Built
+        run: docker images | grep backend
