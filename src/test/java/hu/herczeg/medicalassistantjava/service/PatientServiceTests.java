@@ -2,7 +2,6 @@ package hu.herczeg.medicalassistantjava.service;
 
 
 import hu.herczeg.medicalassistantjava.dto.common.PasswordUpdateDto;
-import hu.herczeg.medicalassistantjava.dto.doctordtos.UpdateDoctorDto;
 import hu.herczeg.medicalassistantjava.dto.patientdtos.PatientLoginDto;
 import hu.herczeg.medicalassistantjava.dto.patientdtos.RegisterPatientDto;
 import hu.herczeg.medicalassistantjava.dto.patientdtos.UpdatePatientDto;

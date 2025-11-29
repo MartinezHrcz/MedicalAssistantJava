@@ -107,7 +107,7 @@ public class DoctorController {
     @PostMapping("login")
     public ResponseEntity<DoctorAuthResponseDto> loginDoctor(@RequestBody LoginDoctorDto dto) {
         try {
-            return  ResponseEntity.ok(doctorService.loginDoctor(dto));
+            return ResponseEntity.ok(doctorService.loginDoctor(dto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
