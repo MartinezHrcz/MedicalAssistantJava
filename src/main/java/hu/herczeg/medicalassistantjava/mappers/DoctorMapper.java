@@ -17,8 +17,6 @@ public interface DoctorMapper {
     @Mapping(source = "email", target = "email")
     DoctorDto toDto(Doctor doctor);
 
-    Doctor toEntity(DoctorDto doctorDto);
-
     @Mapping(source = "name", target = "name")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "phone", target = "phoneNumber")

@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +40,19 @@ public class DoctorServiceTests {
     private DoctorService doctorService;
 
     Doctor doctor = new Doctor(1L, "testtest", "test", "123", "test@gmail.com", "xyzzzzz");
+    Doctor doctor2 = new Doctor(2L, "testtest", "test", "123", "test@gmail.com", "xyzzzzz");
+
+    static Patient patient =
+            new Patient(1L,
+                    "testPatient",
+                    "address",
+                    "111-111-111",
+                    "Complaints",
+                    LocalDateTime.now(),
+                    "PasswordHash",
+                    new Doctor(),
+                    new ArrayList<Medication>()
+            );
 
     private RegisterDoctorDto createRegisterDto() {
         return new RegisterDoctorDto("John Doe", "test str","123","john.doe@test.com", "password123!");
@@ -207,6 +221,16 @@ public class DoctorServiceTests {
         when(doctorRepository.findById(anyLong())).thenReturn(Optional.of(new Doctor()));
 
         assertThrows(NoSuchElementException.class, () -> doctorService.removePatient(1L,2L));
+    }
+
+    @Test
+    public void patientOtherDoctor_RemovePatient_Fail() {
+
+        when(patientRepository.findById(anyLong())).thenReturn(Optional.ofNullable(patient));
+        patient.setDoctor(doctor);
+        when(doctorRepository.findById(anyLong())).thenReturn(Optional.ofNullable(doctor2));
+
+        assertThrows(IllegalArgumentException.class, () -> doctorService.removePatient(1L,2L));
     }
 
     @Test

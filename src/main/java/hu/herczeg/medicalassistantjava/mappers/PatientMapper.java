@@ -22,14 +22,6 @@ public interface PatientMapper {
     @Mapping(source = "doctor.id", target = "doctorId")
     PatientDto toDto(Patient patient);
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "taj", target = "taj")
-    @Mapping(source = "address", target = "address")
-    @Mapping(source = "timeOfAdmission", target = "timeOfAdmission")
-    @Mapping(source = "complaints", target = "complaints")
-    Patient toEntity(PatientDto patientDto);
-
     @Mapping(source = "name", target = "name")
     @Mapping(source = "taj", target = "taj")
     @Mapping(source = "address", target = "address")
