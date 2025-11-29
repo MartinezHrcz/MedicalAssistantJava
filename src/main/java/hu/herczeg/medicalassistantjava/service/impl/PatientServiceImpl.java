@@ -87,12 +87,18 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void deletePatient(Long id) {
-        patientRepository.deleteById(id);
+        Patient patient = patientRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        patientRepository.delete(patient);
     }
 
     @Override
     public PatientAuthResponseDto loginPatientAsync(PatientLoginDto dto) {
         Patient patient = patientRepository.findByTaj(dto.taj);
+
+        if (patient == null) {
+            throw new NoSuchElementException("Patient not found");
+        }
+
         if (!passwordEncoder.matches(dto.password, patient.getPasswordHash())) {
             throw new IllegalArgumentException("Old password does not match hash");
         }
