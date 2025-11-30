@@ -13,13 +13,13 @@ import java.util.List;
 public interface DoctorMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "address", target = "address")
-    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "phone", target = "phone")
     @Mapping(source = "email", target = "email")
     DoctorDto toDto(Doctor doctor);
 
     @Mapping(source = "name", target = "name")
     @Mapping(source = "address", target = "address")
-    @Mapping(source = "phone", target = "phoneNumber")
+    @Mapping(source = "phone", target = "phone")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "password", target = "passwordHash")
     Doctor toEntity(RegisterDoctorDto dto);

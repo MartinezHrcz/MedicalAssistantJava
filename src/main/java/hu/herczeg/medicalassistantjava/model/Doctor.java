@@ -30,7 +30,7 @@ public class Doctor {
     private String address;
 
     @Column(nullable = false)
-    private String phoneNumber;
+    private String phone;
 
     @Column(nullable = false, length = 100)
     private String email;

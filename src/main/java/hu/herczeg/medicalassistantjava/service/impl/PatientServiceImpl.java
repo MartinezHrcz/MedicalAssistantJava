@@ -14,6 +14,7 @@ import hu.herczeg.medicalassistantjava.service.interfaces.PatientService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -58,6 +59,7 @@ public class PatientServiceImpl implements PatientService {
     public PatientDto createPatient(RegisterPatientDto dto) {
         Patient patient = patientMapper.toEntity(dto);
         patient.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        patient.setTimeOfAdmission(LocalDateTime.now());
         patientRepository.save(patient);
         return patientMapper.toDto(patient);
     }

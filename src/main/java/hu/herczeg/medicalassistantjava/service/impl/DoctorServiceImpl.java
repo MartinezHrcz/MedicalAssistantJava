@@ -78,7 +78,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setName(dto.name);
         doctor.setEmail(dto.email);
         doctor.setAddress(dto.address);
-        doctor.setPhoneNumber(dto.phone);
+        doctor.setPhone(dto.phone);
         doctorRepository.save(doctor);
         return doctorMapper.toDto(doctor);
     }
@@ -86,7 +86,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public boolean updateDoctorPassword(Long id, PasswordUpdateDto dto) {
         Doctor doctor = doctorRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        if (!passwordEncoder.matches(doctor.getPasswordHash(), dto.oldPassword)) {
+        if (!passwordEncoder.matches(dto.oldPassword,doctor.getPasswordHash())) {
             throw new IllegalArgumentException("Old Password does not match");
         }
         doctor.setPasswordHash(passwordEncoder.encode(dto.newPassword));

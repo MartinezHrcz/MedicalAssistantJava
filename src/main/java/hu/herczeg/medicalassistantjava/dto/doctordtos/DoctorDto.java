@@ -15,7 +15,7 @@ public class DoctorDto {
     public long id;
     public String name;
     public String address;
-    public String phoneNumber;
+    public String phone;
     public String email;
 }
 
