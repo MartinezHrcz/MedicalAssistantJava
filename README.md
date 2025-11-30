@@ -21,6 +21,7 @@ Backend Framework: Java Spring Boot
 
 Build Tool: Maven
 
-Database: PostgreSQL (For tests in memory db is used)
+Database: PostgreSQL (For tests in memory db is used **Don't forget to use dev profile for tests**)
 
 ORM/Data Access: Spring Data JPA/Hibernate
+
