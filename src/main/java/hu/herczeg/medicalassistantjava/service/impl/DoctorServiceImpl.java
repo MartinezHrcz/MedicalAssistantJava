@@ -99,6 +99,10 @@ public class DoctorServiceImpl implements DoctorService {
         if (doctorRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Doctor does not exist");
         }
+        patientRepository.findAll().forEach(patient -> {
+            patient.setDoctor(null);
+            patientRepository.save(patient);
+        });
         doctorRepository.deleteById(id);
         return true;
     }
