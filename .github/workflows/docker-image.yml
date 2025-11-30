@@ -11,6 +11,20 @@ jobs:
     name: Build, Test, and Generate Jacoco Report
     runs-on: ubuntu-latest
     
+    services:
+      postgres:
+        image: postgres:15-alpine 
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: medical_db 
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -24,7 +38,11 @@ jobs:
 
       - name: Build and Run Tests with Maven (Generating Jacoco Report)
         run: mvn clean install -DskipTests=false
-        
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/medical_db
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+            
       - name: Upload Jacoco Coverage Report Artifact
         uses: actions/upload-artifact@v4
         with:
