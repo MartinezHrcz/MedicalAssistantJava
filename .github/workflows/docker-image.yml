@@ -37,7 +37,7 @@ jobs:
           cache: 'maven'
 
       - name: Build and Run Tests with Maven (Generating Jacoco Report)
-        run: mvn clean install -DskipTests=false
+        run: mvn clean install -DskipTests=false -Dspring.profiles.active=dev
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/medical_db
           SPRING_DATASOURCE_USERNAME: postgres
