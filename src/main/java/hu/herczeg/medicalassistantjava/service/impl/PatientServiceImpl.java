@@ -84,6 +84,7 @@ public class PatientServiceImpl implements PatientService {
             throw new IllegalArgumentException("Old password does not match hash");
         }
         patient.setPasswordHash(passwordEncoder.encode(dto.newPassword));
+        patientRepository.save(patient);
         return true;
     }
 
